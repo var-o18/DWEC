@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+</head>
+
+<body>
+    <form action="submit" method="post">
+        <fieldset>
+            <legend>Formulario</legend>
+
+            <div>
+                <label for="nombre">Nombre:</label><br>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div>
+                <label for="apellidos">Apellidos:</label><br>
+                <input type="text" id="apellidos" name="apellidos" required>
+            </div>
+
+            <div>
+                <label for="password">Contraseña:</label><br>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div>
+                <label for="telefono">Teléfono:</label><br>
+                <input type="tel" id="telefono" name="telefono" required>
+            </div>
+
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Sexo</legend>
+            <div>
+                <input type="radio" id="masculino" name="sexo" value="masculino" required>
+                <label for="masculino">Masculino</label>
+            </div>
+
+            <div>
+                <input type="radio" id="femenino" name="sexo" value="femenino">
+                <label for="femenino">Femenino</label>
+            </div>
+
+            <div>
+                <input type="radio" id="otro" name="sexo" value="otro">
+                <label for="otro">Otro</label>
+            </div>
+        </fieldset><br>
+
+        <button type="submit">Enviar</button>
+    </form><br>
+    
+    <fieldset>
+        <legend>ENLACES</legend>
+        <a href="index.html">Index</a><br>
+        <a href="table.html">Tabla</a><br>
+        <a href="login.html">Login</a><br>
+        <a href="tutorial.html">Tutorial</a>
+    </fieldset>
+</body>
+
+</html>
