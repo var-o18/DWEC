@@ -1,43 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script type="text/javascript" src="js/index.js" defer></script>
+    <link rel="stylesheet" href="css/index.css">
 </head>
+
 <body>
     <header>
         <h1>Tabla</h1>
     </header>
-    <table border="1">
-    <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Telefono</th>
-        <th>Email</th>
-        <th>Sexo</th>
-    </tr>
-    <tr>
-        <td>Juan</td>
-        <td>Pérez</td>
-        <td>28</td>
-        <td>654414111</td>
-        <td>Masculino</td>
-    </tr>
-    <tr>
-        <td>Juan</td>
-        <td>Pérez</td>
-        <td>28</td>
-        <td>654414111</td>
-        <td>Masculino</td>
-    </tr>
-    <tr>
-        <td>Juan</td>
-        <td>Pérez</td>
-        <td>28</td>
-        <td>654414111</td>
-        <td>Masculino</td>
-    </tr>
+    <input type="text" id="filtro" placeholder="Nombre o Apellido">
+    <table id="tablaUsuarios" border="1">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Sexo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </tr>
     </table>
     <fieldset>
         <legend>ENLACES</legend>
@@ -47,4 +37,5 @@
         <a href="tutorial.html">Tutorial</a>
     </fieldset>
 </body>
+
 </html>

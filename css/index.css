@@ -1,0 +1,21 @@
+#tablaUsuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+#tablaUsuarios th, #tablaUsuarios td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+#tablaUsuarios th {
+  background-color: #f2f2f2;
+}
+#tablaUsuarios th {
+  background-color: #f2f2f2;
+}
+#filtro {
+  margin-bottom: 15px;
+  padding: 8px;
+  width: 300px;
+  font-size: 16px;
+}
