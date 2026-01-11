@@ -1,4 +1,4 @@
-const usuarios = [
+const initialUsers = [
   { id: 1, nombre: "Pepe", apellidos: "Pérez", telefono: "600123123", email: "pepe@example.com", sexo: "masculino" },
   { id: 2, nombre: "Ana", apellidos: "López", telefono: "600456456", email: "ana@example.com", sexo: "femenino" },
   { id: 3, nombre: "Mario", apellidos: "García", telefono: "611777888", email: "mario@example.com", sexo: "masculino" },
@@ -9,66 +9,159 @@ const usuarios = [
   { id: 8, nombre: "Laura", apellidos: "Martínez", telefono: "612000005", email: "laura@example.com", sexo: "femenino" },
   { id: 9, nombre: "Pedro", apellidos: "Pérez", telefono: "612000006", email: "pedro@example.com", sexo: "masculino" },
   { id: 10, nombre: "María", apellidos: "López", telefono: "612000007", email: "maria@example.com", sexo: "femenino" },
-  { id: 11, nombre: "Raúl", apellidos: "Ruiz", telefono: "612000008", email: "raul@example.com", sexo: "masculino" },
-  { id: 12, nombre: "Carmen", apellidos: "Ruiz", telefono: "612000009", email: "carmen@example.com", sexo: "femenino" },
-  { id: 13, nombre: "José", apellidos: "García", telefono: "612000010", email: "jose@example.com", sexo: "masculino" },
-  { id: 14, nombre: "Elena", apellidos: "Pérez", telefono: "612000011", email: "elena@example.com", sexo: "femenino" },
-  { id: 15, nombre: "Manuel", apellidos: "López", telefono: "612000012", email: "manuel@example.com", sexo: "masculino" },
-  { id: 16, nombre: "Isabel", apellidos: "Martínez", telefono: "612000013", email: "isabel@example.com", sexo: "femenino" },
-  { id: 17, nombre: "Alberto", apellidos: "García", telefono: "612000014", email: "alberto@example.com", sexo: "masculino" },
-  { id: 18, nombre: "Paula", apellidos: "Pérez", telefono: "612000015", email: "paula@example.com", sexo: "femenino" },
-  { id: 19, nombre: "Rubén", apellidos: "Ruiz", telefono: "612000016", email: "ruben@example.com", sexo: "masculino" },
-  { id: 20, nombre: "Cristina", apellidos: "García", telefono: "612000017", email: "cristina@example.com", sexo: "femenino" },
-  { id: 21, nombre: "Miguel", apellidos: "López", telefono: "612000018", email: "miguel@example.com", sexo: "masculino" },
-  { id: 22, nombre: "Natalia", apellidos: "Ruiz", telefono: "612000019", email: "natalia@example.com", sexo: "femenino" },
-  { id: 23, nombre: "Sergio", apellidos: "Martínez", telefono: "612000020", email: "sergio@example.com", sexo: "masculino" },
-  { id: 24, nombre: "Andrea", apellidos: "García", telefono: "612000021", email: "andrea@example.com", sexo: "femenino" },
-  { id: 25, nombre: "David", apellidos: "López", telefono: "612000022", email: "david@example.com", sexo: "masculino" },
-  { id: 26, nombre: "Marta", apellidos: "Pérez", telefono: "612000023", email: "marta@example.com", sexo: "femenino" },
-  { id: 27, nombre: "Iván", apellidos: "Ruiz", telefono: "612000024", email: "ivan@example.com", sexo: "masculino" },
-  { id: 28, nombre: "Patricia", apellidos: "Martínez", telefono: "612000025", email: "patricia@example.com", sexo: "femenino" },
-  { id: 29, nombre: "Javier", apellidos: "Pérez", telefono: "612000026", email: "javier@example.com", sexo: "masculino" },
-  { id: 30, nombre: "Rosa", apellidos: "García", telefono: "612000027", email: "rosa@example.com", sexo: "femenino" },
-  { id: 31, nombre: "Tomás", apellidos: "López", telefono: "612000028", email: "tomas@example.com", sexo: "masculino" },
-  { id: 32, nombre: "Clara", apellidos: "Ruiz", telefono: "612000029", email: "clara@example.com", sexo: "femenino" },
-  { id: 33, nombre: "Andrés", apellidos: "Martínez", telefono: "612000030", email: "andres@example.com", sexo: "masculino" },
 ];
+
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || initialUsers;
 
 const cuerpoTabla = document.querySelector('#tablaUsuarios tbody');
 const inputFiltro = document.querySelector('#filtro');
 
-function crearCelda(texto) {
+function saveToLocalStorage() {
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+}
+
+function crearCelda(texto, editable = false, tipo = 'text') {
   const td = document.createElement('td');
-  td.textContent = texto;
+  if (editable) {
+    const input = document.createElement('input');
+    input.type = tipo;
+    input.value = texto;
+    input.className = 'edit-input';
+    td.appendChild(input);
+  } else {
+    td.textContent = texto;
+  }
   return td;
 }
 
-function crearFila(usuario) {
+function crearCeldaSelect(valor, editable = false) {
+  const td = document.createElement('td');
+  if (editable) {
+    const select = document.createElement('select');
+    select.className = 'edit-input';
+    const opciones = [
+      { value: 'masculino', text: 'H' },
+      { value: 'femenino', text: 'M' },
+      { value: 'otro', text: 'O' }
+    ];
+    opciones.forEach(op => {
+      const option = document.createElement('option');
+      option.value = op.value;
+      option.textContent = op.text;
+      if (op.value === valor) option.selected = true;
+      select.appendChild(option);
+    });
+    td.appendChild(select);
+  } else {
+    td.textContent = valor === 'masculino' ? 'H' : (valor === 'femenino' ? 'M' : 'O');
+  }
+  return td;
+}
+
+function crearFila(usuario, modoEdicion = false) {
   const tr = document.createElement('tr');
+  tr.dataset.userId = usuario.id;
 
-  tr.appendChild(crearCelda(usuario.nombre));
-  tr.appendChild(crearCelda(usuario.apellidos));
-  tr.appendChild(crearCelda(usuario.telefono));
-  tr.appendChild(crearCelda(usuario.email));
-  tr.appendChild(crearCelda(usuario.sexo));
+  if (modoEdicion) {
+    tr.appendChild(crearCelda(usuario.nombre, true));
+    tr.appendChild(crearCelda(usuario.apellidos, true));
+    tr.appendChild(crearCelda(usuario.email, true, 'email'));
+    tr.appendChild(crearCeldaSelect(usuario.sexo, true));
+    tr.appendChild(crearCelda(usuario.telefono, true, 'tel'));
 
-  const celdaAccion = document.createElement('td');
-  const botonEliminar = document.createElement('button');
+    const celdaAccion = document.createElement('td');
+    
+    const botonGuardar = document.createElement('button');
+    botonGuardar.textContent = 'Guardar';
+    botonGuardar.style.backgroundColor = '#4CAF50';
+    botonGuardar.style.color = 'white';
+    botonGuardar.onclick = () => guardarEdicionInline(usuario.id, tr);
+    celdaAccion.appendChild(botonGuardar);
 
-  botonEliminar.textContent = 'X';
-  botonEliminar.style.backgroundColor = 'red';
-  botonEliminar.style.color = 'white';
-  botonEliminar.onclick = () => eliminarUsuarioPorId(usuario.id);
+    const botonCancelar = document.createElement('button');
+    botonCancelar.textContent = 'Cancelar';
+    botonCancelar.style.backgroundColor = '#f44336';
+    botonCancelar.style.color = 'white';
+    botonCancelar.onclick = () => cancelarEdicionInline();
+    celdaAccion.appendChild(botonCancelar);
 
-  celdaAccion.appendChild(botonEliminar);
-  tr.appendChild(celdaAccion);
-  
+    tr.appendChild(celdaAccion);
+  } else {
+    tr.appendChild(crearCelda(usuario.nombre));
+    tr.appendChild(crearCelda(usuario.apellidos));
+    tr.appendChild(crearCelda(usuario.email));
+    tr.appendChild(crearCeldaSelect(usuario.sexo));
+    tr.appendChild(crearCelda(usuario.telefono));
+
+    const celdaAccion = document.createElement('td');
+
+    const botonEliminar = document.createElement('button');
+    botonEliminar.textContent = 'Borrar Elemento';
+    botonEliminar.onclick = () => eliminarUsuarioPorId(usuario.id);
+    celdaAccion.appendChild(botonEliminar);
+
+    const botonModificar = document.createElement('button');
+    botonModificar.textContent = 'Modificar Elemento';
+    botonModificar.onclick = () => editarUsuarioInline(usuario.id);
+    celdaAccion.appendChild(botonModificar);
+
+    tr.appendChild(celdaAccion);
+  }
+
   return tr;
 }
 
+function editarUsuarioInline(usuarioId) {
+  const usuario = usuarios.find(u => u.id === usuarioId);
+  if (!usuario) return;
 
+  const tr = document.querySelector(`tr[data-user-id="${usuarioId}"]`);
+  if (!tr) return;
+
+  const nuevaFila = crearFila(usuario, true);
+  tr.parentNode.replaceChild(nuevaFila, tr);
+}
+
+function guardarEdicionInline(usuarioId, tr) {
+  const inputs = tr.querySelectorAll('.edit-input');
+  if (inputs.length < 5) return;
+
+  const usuarioActualizado = {
+    nombre: inputs[0].value.trim(),
+    apellidos: inputs[1].value.trim(),
+    email: inputs[2].value.trim(),
+    sexo: inputs[3].value,
+    telefono: inputs[4].value.trim()
+  };
+
+  const index = usuarios.findIndex(u => u.id === usuarioId);
+  if (index !== -1) {
+    usuarios[index] = { ...usuarios[index], ...usuarioActualizado };
+    saveToLocalStorage();
+    
+    const nuevaFila = crearFila(usuarios[index], false);
+    tr.parentNode.replaceChild(nuevaFila, tr);
+    
+    const filtro = inputFiltro.value;
+    if (filtro.length >= 3) {
+      filtrarUsuarios();
+    }
+  }
+}
+
+function cancelarEdicionInline() {
+  llenarTabla(inputFiltro.value.length >= 3 ? 
+    usuarios.filter(u => {
+      const filtro = quitarAcentos(inputFiltro.value.toLowerCase());
+      const nombre = quitarAcentos(u.nombre.toLowerCase());
+      const apellidos = quitarAcentos(u.apellidos.toLowerCase());
+      return nombre.includes(filtro) || apellidos.includes(filtro);
+    }) : usuarios
+  );
+}
 
 function llenarTabla(lista) {
+  if (!cuerpoTabla) return;
   cuerpoTabla.innerHTML = '';
   for (const usuario of lista) {
     const fila = crearFila(usuario);
@@ -76,14 +169,9 @@ function llenarTabla(lista) {
   }
 }
 
-
-
 function quitarAcentos(texto) {
   return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
-
-
-
 
 function filtrarUsuarios() {
   const filtro = quitarAcentos(inputFiltro.value.toLowerCase());
@@ -94,27 +182,33 @@ function filtrarUsuarios() {
   const usuariosFiltrados = usuarios.filter(u => {
     const nombre = quitarAcentos(u.nombre.toLowerCase());
     const apellidos = quitarAcentos(u.apellidos.toLowerCase());
-    const coincideTexto = nombre.includes(filtro) || apellidos.includes(filtro);
-    return coincideTexto;
+    return nombre.includes(filtro) || apellidos.includes(filtro);
   });
 
   llenarTabla(usuariosFiltrados);
 }
 
-
-
 function eliminarUsuarioPorId(id) {
   const index = usuarios.findIndex(u => u.id === id);
   if (index !== -1) {
     usuarios.splice(index, 1);
-    llenarTabla(usuarios);
+    saveToLocalStorage();
+    
+    const filtro = inputFiltro.value;
+    if (filtro.length >= 3) {
+      filtrarUsuarios();
+    } else {
+      llenarTabla(usuarios);
+    }
   }
 }
 
-
-
-
 window.onload = () => {
+  if (localStorage.getItem('usuarios') === null) {
+    saveToLocalStorage();
+  }
   llenarTabla(usuarios);
-  inputFiltro.addEventListener('input', filtrarUsuarios);
+  if (inputFiltro) {
+    inputFiltro.addEventListener('input', filtrarUsuarios);
+  }
 };

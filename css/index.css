@@ -1,21 +1,90 @@
+body {
+  background-color: #1a1a1a;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
 #tablaUsuarios {
   width: 100%;
   border-collapse: collapse;
+  background-color: #333;
+  color: #ff6347;
 }
-#tablaUsuarios th, #tablaUsuarios td {
-  border: 1px solid #ddd;
-  padding: 8px;
+
+#tablaUsuarios th,
+#tablaUsuarios td {
+  border: 1px solid #444;
+  padding: 12px;
   text-align: left;
 }
+
 #tablaUsuarios th {
-  background-color: #f2f2f2;
+  background-color: #222;
+  color: #ddd;
+  text-transform: lowercase;
 }
-#tablaUsuarios th {
-  background-color: #f2f2f2;
-}
+
 #filtro {
-  margin-bottom: 15px;
-  padding: 8px;
+  margin: 20px 0;
+  padding: 10px;
   width: 300px;
   font-size: 16px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+}
+
+button {
+  background-color: #444;
+  color: white;
+  border: 1px solid #555;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+/* Estilos del Navbar */
+.navbar {
+  width: 100%;
+  background-color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navbar li {
+  float: left;
+}
+
+.navbar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.navbar li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.navbar li.right {
+  float: right;
+}
+
+.navbar li a.active {
+  background-color: #04AA6D;
+  color: white;
+  font-weight: bold;
 }

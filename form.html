@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/form.js" defer></script>
 </head>
+
 <body>
-    <form action="submit" method="post">
+    <form id="registroForm">
         <fieldset>
-            <legend>Formulario</legend>
+            <legend id="formLegend">Registro de Usuario</legend>
 
             <div>
                 <label for="nombre">Nombre:</label><br>
@@ -21,7 +24,7 @@
                 <input type="text" id="apellidos" name="apellidos" required>
             </div>
 
-            <div>
+            <div id="passwordField">
                 <label for="password">Contraseña:</label><br>
                 <input type="password" id="password" name="password" required>
             </div>
@@ -55,16 +58,12 @@
             </div>
         </fieldset><br>
 
-        <button type="submit">Enviar</button>
+        <button type="submit" id="submitBtn">Enviar</button>
+        <button type="button" id="cancelBtn"
+            style="display: none; background-color: #f44336; margin-left: 10px;">Cancelar</button>
     </form><br>
-    
-    <fieldset>
-        <legend>ENLACES</legend>
-        <a href="index.html">Index</a><br>
-        <a href="table.html">Tabla</a><br>
-        <a href="login.html">Login</a><br>
-        <a href="tutorial.html">Tutorial</a>
-    </fieldset>
+
+    <script src="nav.js"></script>
 </body>
 
 </html>
