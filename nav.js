@@ -1,42 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const style = document.createElement("style");
-    style.textContent = `
-        .navbar ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-            font-family: Arial, sans-serif;
-        }
-
-        .navbar li {
-            float: left;
-        }
-
-        .navbar li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .navbar li a:hover:not(.active) {
-            background-color: #111;
-        }
-
-        .navbar li.right {
-            float: right;
-        }
-
-        .navbar li a.active {
-            background-color: #04AA6D;
-            color: white;
-        }
-    `;
-    document.head.appendChild(style);
-
     fetch("nav.html")
         .then(response => {
             if (!response.ok) {
