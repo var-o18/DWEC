@@ -1,214 +1,227 @@
-const initialUsers = [
-  { id: 1, nombre: "Pepe", apellidos: "Pérez", telefono: "600123123", email: "pepe@example.com", sexo: "masculino" },
-  { id: 2, nombre: "Ana", apellidos: "López", telefono: "600456456", email: "ana@example.com", sexo: "femenino" },
-  { id: 3, nombre: "Mario", apellidos: "García", telefono: "611777888", email: "mario@example.com", sexo: "masculino" },
-  { id: 4, nombre: "Lucía", apellidos: "Pérez", telefono: "612000001", email: "lucia@example.com", sexo: "femenino" },
-  { id: 5, nombre: "Carlos", apellidos: "López", telefono: "612000002", email: "carlos@example.com", sexo: "masculino" },
-  { id: 6, nombre: "Sofía", apellidos: "García", telefono: "612000003", email: "sofia@example.com", sexo: "femenino" },
-  { id: 7, nombre: "Juan", apellidos: "Martínez", telefono: "612000004", email: "juan@example.com", sexo: "masculino" },
-  { id: 8, nombre: "Laura", apellidos: "Martínez", telefono: "612000005", email: "laura@example.com", sexo: "femenino" },
-  { id: 9, nombre: "Pedro", apellidos: "Pérez", telefono: "612000006", email: "pedro@example.com", sexo: "masculino" },
-  { id: 10, nombre: "María", apellidos: "López", telefono: "612000007", email: "maria@example.com", sexo: "femenino" },
-];
+const URL = "../../MONFAB%20-MYSQL/ws/";
+let cacheDatos = [];
 
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || initialUsers;
-
-const cuerpoTabla = document.querySelector('#tablaUsuarios tbody');
-const inputFiltro = document.querySelector('#filtro');
-
-function saveToLocalStorage() {
-  localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-
-function crearCelda(texto, editable = false, tipo = 'text') {
-  const td = document.createElement('td');
-  if (editable) {
-    const input = document.createElement('input');
-    input.type = tipo;
-    input.value = texto;
-    input.className = 'edit-input';
-    td.appendChild(input);
-  } else {
-    td.textContent = texto;
-  }
-  return td;
-}
-
-function crearCeldaSelect(valor, editable = false) {
-  const td = document.createElement('td');
-  if (editable) {
-    const select = document.createElement('select');
-    select.className = 'edit-input';
-    const opciones = [
-      { value: 'masculino', text: 'H' },
-      { value: 'femenino', text: 'M' },
-      { value: 'otro', text: 'O' }
-    ];
-    opciones.forEach(op => {
-      const option = document.createElement('option');
-      option.value = op.value;
-      option.textContent = op.text;
-      if (op.value === valor) option.selected = true;
-      select.appendChild(option);
-    });
-    td.appendChild(select);
-  } else {
-    td.textContent = valor === 'masculino' ? 'H' : (valor === 'femenino' ? 'M' : 'O');
-  }
-  return td;
-}
-
-function crearFila(usuario, modoEdicion = false) {
-  const tr = document.createElement('tr');
-  tr.dataset.userId = usuario.id;
-
-  if (modoEdicion) {
-    tr.appendChild(crearCelda(usuario.nombre, true));
-    tr.appendChild(crearCelda(usuario.apellidos, true));
-    tr.appendChild(crearCelda(usuario.email, true, 'email'));
-    tr.appendChild(crearCeldaSelect(usuario.sexo, true));
-    tr.appendChild(crearCelda(usuario.telefono, true, 'tel'));
-
-    const celdaAccion = document.createElement('td');
-    
-    const botonGuardar = document.createElement('button');
-    botonGuardar.textContent = 'Guardar';
-    botonGuardar.style.backgroundColor = '#4CAF50';
-    botonGuardar.style.color = 'white';
-    botonGuardar.onclick = () => guardarEdicionInline(usuario.id, tr);
-    celdaAccion.appendChild(botonGuardar);
-
-    const botonCancelar = document.createElement('button');
-    botonCancelar.textContent = 'Cancelar';
-    botonCancelar.style.backgroundColor = '#f44336';
-    botonCancelar.style.color = 'white';
-    botonCancelar.onclick = () => cancelarEdicionInline();
-    celdaAccion.appendChild(botonCancelar);
-
-    tr.appendChild(celdaAccion);
-  } else {
-    tr.appendChild(crearCelda(usuario.nombre));
-    tr.appendChild(crearCelda(usuario.apellidos));
-    tr.appendChild(crearCelda(usuario.email));
-    tr.appendChild(crearCeldaSelect(usuario.sexo));
-    tr.appendChild(crearCelda(usuario.telefono));
-
-    const celdaAccion = document.createElement('td');
-
-    const botonEliminar = document.createElement('button');
-    botonEliminar.textContent = 'Borrar Elemento';
-    botonEliminar.onclick = () => eliminarUsuarioPorId(usuario.id);
-    celdaAccion.appendChild(botonEliminar);
-
-    const botonModificar = document.createElement('button');
-    botonModificar.textContent = 'Modificar Elemento';
-    botonModificar.onclick = () => editarUsuarioInline(usuario.id);
-    celdaAccion.appendChild(botonModificar);
-
-    tr.appendChild(celdaAccion);
-  }
-
-  return tr;
-}
-
-function editarUsuarioInline(usuarioId) {
-  const usuario = usuarios.find(u => u.id === usuarioId);
-  if (!usuario) return;
-
-  const tr = document.querySelector(`tr[data-user-id="${usuarioId}"]`);
-  if (!tr) return;
-
-  const nuevaFila = crearFila(usuario, true);
-  tr.parentNode.replaceChild(nuevaFila, tr);
-}
-
-function guardarEdicionInline(usuarioId, tr) {
-  const inputs = tr.querySelectorAll('.edit-input');
-  if (inputs.length < 5) return;
-
-  const usuarioActualizado = {
-    nombre: inputs[0].value.trim(),
-    apellidos: inputs[1].value.trim(),
-    email: inputs[2].value.trim(),
-    sexo: inputs[3].value,
-    telefono: inputs[4].value.trim()
-  };
-
-  const index = usuarios.findIndex(u => u.id === usuarioId);
-  if (index !== -1) {
-    usuarios[index] = { ...usuarios[index], ...usuarioActualizado };
-    saveToLocalStorage();
-    
-    const nuevaFila = crearFila(usuarios[index], false);
-    tr.parentNode.replaceChild(nuevaFila, tr);
-    
-    const filtro = inputFiltro.value;
-    if (filtro.length >= 3) {
-      filtrarUsuarios();
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById('tablaElementos')) {
+        traerElementos();
+        document.getElementById('filtro').addEventListener('input', filtrarElementos);
     }
-  }
+    const form = document.getElementById('registroForm');
+    if (form) configurarFormulario(form);
+});
+
+function configurarFormulario(form) {
+    document.getElementById('formLegend').innerHTML = "Nuevo Elemento";
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        insertarElemento(new FormData(form));
+    };
 }
 
-function cancelarEdicionInline() {
-  llenarTabla(inputFiltro.value.length >= 3 ? 
-    usuarios.filter(u => {
-      const filtro = quitarAcentos(inputFiltro.value.toLowerCase());
-      const nombre = quitarAcentos(u.nombre.toLowerCase());
-      const apellidos = quitarAcentos(u.apellidos.toLowerCase());
-      return nombre.includes(filtro) || apellidos.includes(filtro);
-    }) : usuarios
-  );
+function insertarElemento(formData) {
+    Swal.fire({ title: 'Vas a crear un elemento nuevo chavalin', showCancelButton: true })
+        .then((result) => {
+            if (result.isConfirmed) {
+                fetch(URL + "createElement2.php", { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(json => {
+                        if (json.id) {
+                            Swal.fire('Elemento creado', )
+                                .then(() => window.location.href = "table.html");
+                        }
+                    });
+            }
+        });
+}
+
+function traerElementos() {
+    fetch(URL + "getElement.php")
+        .then(response => response.json())
+        .then(json => {
+            cacheDatos = json;
+            llenarTabla(cacheDatos);
+        })
+        .catch(error => console.error("Error al cargar:", error));
+}
+
+
+function quitarAcentos(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function filtrarElementos() {
+    const valor = document.getElementById('filtro').value.toLowerCase();
+
+    if (valor.length < 3) {
+        llenarTabla(cacheDatos);
+        return;
+    }
+
+    const filtrados = cacheDatos.filter(item => {
+        const nombre = quitarAcentos(item.nombre.toLowerCase());
+        const descripcion = quitarAcentos(item.descripcion.toLowerCase());
+        return nombre.includes(valor) || descripcion.includes(valor);
+    });
+
+    llenarTabla(filtrados);
+}
+
+
+function crearCelda(texto) {
+    const td = document.createElement('td');
+    td.textContent = texto;
+    return td;
+}
+
+function crearFila(item) {
+    const tr = document.createElement('tr');
+    tr.dataset.id = item.id;
+
+    let estBusca = (item.estado || "").toLowerCase();
+    let estadoTexto = "Desconocido";
+    if (estBusca === 'operativo' || estBusca === 'h' || estBusca === 'activo') estadoTexto = 'Activo';
+    else if (estBusca === 'baja' || estBusca === 'o' || estBusca === 'inactivo') estadoTexto = 'Inactivo';
+    else if (estBusca === 'mantenimiento' || estBusca === 'm') estadoTexto = 'Mantenimiento';
+
+
+    let prioBusca = (item.prioridad || "").toString().toLowerCase();
+    let prioridadTexto = "Baja";
+    if (prioBusca === '1' || prioBusca === 'baja') prioridadTexto = "Baja";
+    else if (prioBusca === '2' || prioBusca === 'media') prioridadTexto = "Media";
+    else if (prioBusca === '3' || prioBusca === 'alta') prioridadTexto = "Alta";
+
+    tr.appendChild(crearCelda(item.nombre || "Sin Nombre"));
+    tr.appendChild(crearCelda(item.descripcion || ""));
+    tr.appendChild(crearCelda(item.nserie || ""));
+    tr.appendChild(crearCelda(estadoTexto));
+    tr.appendChild(crearCelda(prioridadTexto));
+
+    const tdAcciones = document.createElement('td');
+
+    const btnBorrar = document.createElement('button');
+    btnBorrar.textContent = 'Borrar';
+    btnBorrar.onclick = () => eliminarElemento(item.id);
+    tdAcciones.appendChild(btnBorrar);
+
+    const btnModificar = document.createElement('button');
+    btnModificar.textContent = 'Modificar';
+    btnModificar.onclick = () => {
+        console.log("Editando item:", item);
+        prepararModificacion(item);
+    };
+    tdAcciones.appendChild(btnModificar);
+
+    tr.appendChild(tdAcciones);
+
+    return tr;
+}
+
+function prepararModificacion(item) {
+    fetch('elementoedit.html')
+        .then(respuesta => respuesta.text())
+        .then(htmlDeArchivo => {
+
+            Swal.fire({
+                title: 'Editar Elemento',
+                html: htmlDeArchivo,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar cambios',
+                didOpen: () => {
+                    document.getElementById('edit-nombre').value = item.nombre || "";
+                    document.getElementById('edit-descripcion').value = item.descripcion || "";
+                    document.getElementById('edit-nserie').value = item.nserie || "";
+
+                    if (item.estado == 'h' || item.estado == 'activo' || item.estado == 'operativo') {
+                        document.getElementById('edit-estado').value = 'Operativo';
+                    } else if (item.estado == 'o' || item.estado == 'inactivo' || item.estado == 'baja') {
+                        document.getElementById('edit-estado').value = 'Baja';
+                    } else {
+                        document.getElementById('edit-estado').value = 'Mantenimiento';
+                    }
+
+                    if (item.prioridad == '1' || item.prioridad == 'baja' || item.prioridad == 'Baja') {
+                        document.getElementById('edit-prioridad').value = '1';
+                    } else if (item.prioridad == '2' || item.prioridad == 'media' || item.prioridad == 'Media') {
+                        document.getElementById('edit-prioridad').value = '2';
+                    } else {
+                        document.getElementById('edit-prioridad').value = '3';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formElement = document.getElementById('form-edit-elemento');
+                    const datosParaEnviar = new FormData(formElement);
+
+                    confirmarModificacion(item.id, datosParaEnviar);
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Error al cargar elementoedit.html:", error);
+            Swal.fire('No se ha podido modificar el elemento', 'error');
+        });
+}
+
+function confirmarModificacion(id, formData) {
+
+    fetch(URL + "modifyElements.php?id=" + id, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            return response.json();
+        })
+        .then(json => {
+            console.log("Respuesta del servidor:", json);
+            if (json.id) {
+                Swal.fire('Elemento modificado correctamente', 'success')
+                    .then(() => {
+                        traerElementos();
+                    });
+            } else {
+                Swal.fire('No se ha podido modificar el elemento', 'error');
+            }
+        })
+        .catch(error => {
+            console.error("Error al modificar:", error);
+            Swal.fire('No se ha podido modificar el elemento', 'error');
+        });
+}
+
+function eliminarElemento(id) {
+    Swal.fire({
+        title: 'Vas a borrar un elemento XD', icon: 'warning', showCancelButton: true, cancelButtonText: 'noooo', confirmButtonText: 'si, borrarlo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(URL + "deleteElement.php?id=" + id)
+                .then(response => response.json())
+                .then(json => {
+                    if (json.id) {
+                        Swal.fire('El elemento ha sido eliminado.', 'success');
+                        traerElementos();
+                    } else {
+                        Swal.fire('No se ha podido eliminar el elemento', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire('No se ha podido eliminar el elemento', 'error');
+                });
+        }
+    });
 }
 
 function llenarTabla(lista) {
-  if (!cuerpoTabla) return;
-  cuerpoTabla.innerHTML = '';
-  for (const usuario of lista) {
-    const fila = crearFila(usuario);
-    cuerpoTabla.appendChild(fila);
-  }
-}
+    const table = document.getElementById('tablaElementos');
+    if (!table) return;
 
-function quitarAcentos(texto) {
-  return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
+    const tbody = table.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
 
-function filtrarUsuarios() {
-  const filtro = quitarAcentos(inputFiltro.value.toLowerCase());
-  if (filtro.length < 3) {
-    llenarTabla(usuarios);
-    return;
-  }
-  const usuariosFiltrados = usuarios.filter(u => {
-    const nombre = quitarAcentos(u.nombre.toLowerCase());
-    const apellidos = quitarAcentos(u.apellidos.toLowerCase());
-    return nombre.includes(filtro) || apellidos.includes(filtro);
-  });
-
-  llenarTabla(usuariosFiltrados);
-}
-
-function eliminarUsuarioPorId(id) {
-  const index = usuarios.findIndex(u => u.id === id);
-  if (index !== -1) {
-    usuarios.splice(index, 1);
-    saveToLocalStorage();
-    
-    const filtro = inputFiltro.value;
-    if (filtro.length >= 3) {
-      filtrarUsuarios();
-    } else {
-      llenarTabla(usuarios);
+    for (let i = 0; i < lista.length; i++) {
+        const fila = crearFila(lista[i]);
+        tbody.appendChild(fila);
     }
-  }
 }
 
-window.onload = () => {
-  if (localStorage.getItem('usuarios') === null) {
-    saveToLocalStorage();
-  }
-  llenarTabla(usuarios);
-  if (inputFiltro) {
-    inputFiltro.addEventListener('input', filtrarUsuarios);
-  }
-};

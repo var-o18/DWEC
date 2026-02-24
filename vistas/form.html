@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Monfab</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <script src="../js/index.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <header>
+        <h1 id="formLegend">Nuevo Elemento Monfab</h1>
+    </header>
+    
+    <form id="registroForm">
+        <fieldset>
+            <div>
+                <label for="nombre">Nombre:</label><br>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div>
+                <label for="descripcion">Descripción:</label><br>
+                <textarea id="descripcion" name="descripcion" required rows="3" style="width: 100%;"></textarea>
+            </div>
+
+            <div>
+                <label for="nserie">Nº Serie:</label><br>
+                <input type="text" id="nserie" name="nserie" required>
+            </div>
+
+            <div>
+                <label for="estado">Estado:</label><br>
+                <select id="estado" name="estado" required style="width: 100%; padding: 5px;">
+                    <option value="Operativo">H (Operativo)</option>
+                    <option value="Mantenimiento">M (Mantenimiento)</option>
+                    <option value="Baja">O (Baja)</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="prioridad">Prioridad:</label><br>
+                <select id="prioridad" name="prioridad" required style="width: 100%; padding: 5px;">
+                    <option value="1">Baja</option>
+                    <option value="2">Media</option>
+                    <option value="3">Alta</option>
+                </select>
+            </div>
+        </fieldset><br>
+
+        <button type="submit" id="submitBtn">Enviar</button>
+        <button type="button" id="cancelBtn" onclick="window.location.href='table.html'"
+            style="background-color: #f44336; margin-left: 10px;">Cancelar</button>
+    </form><br>
+
+    <script src="../js/nav.js"></script>
+</body>
+
+</html>

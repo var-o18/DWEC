@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="../js/index.js" defer></script>
+    <link rel="stylesheet" href="../css/index.css">
+    <!-- Librerías Externas -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Tabla</h1>
+    </header>
+    <input type="text" id="filtro" placeholder="Nombre o Apellido">
+    <table id="tablaElementos" border="1">
+        <thead>
+            <tr>
+                <th>nombre</th>
+                <th>descripcion</th>
+                <th>nserie</th>
+                <th>estado</th>
+                <th>prioridad</th>
+                <th>acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </tr>
+    </table>
+    
+    <template id="tmpl-editar">
+        <div style="text-align: left;">
+            <label>Nombre:</label>
+            <input id="edit-nombre" class="swal2-input" style="width: 90%; margin: 10px 0;">
+            
+            <label>Descripción:</label>
+            <textarea id="edit-descripcion" class="swal2-textarea" style="width: 90%; margin: 10px 0;"></textarea>
+            
+            <label>Nº Serie:</label>
+            <input id="edit-nserie" class="swal2-input" style="width: 90%; margin: 10px 0;">
+            
+            <label>Estado:</label>
+            <select id="edit-estado" class="swal2-select" style="width: 95%; margin: 10px 0;">
+                <option value="Operativo">Activo</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="Baja">Inactivo</option>
+            </select>
+            
+            <label>Prioridad:</label>
+            <select id="edit-prioridad" class="swal2-select" style="width: 95%; margin: 10px 0;">
+                <option value="1">Baja</option>
+                <option value="2">Media</option>
+                <option value="3">Alta</option>
+            </select>
+        </div>
+    </template>
+
+    <script src="../js/nav.js"></script>
+</body>
+
+</html>
