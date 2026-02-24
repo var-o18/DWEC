@@ -1,4 +1,4 @@
-const URL = "../../MONFAB%20-MYSQL/ws/";
+const URL = "../ws/";
 let cacheDatos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
