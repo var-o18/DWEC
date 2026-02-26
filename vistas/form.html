@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario Monfab</title>
+    <title>Registro de Alumno</title>
     <link rel="stylesheet" href="../css/index.css">
     <script src="../js/index.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -13,7 +13,7 @@
 
 <body>
     <header>
-        <h1 id="formLegend">Nuevo Elemento Monfab</h1>
+        <h1 id="formLegend">Nuevo Alumno</h1>
     </header>
     
     <form id="registroForm">
@@ -24,35 +24,41 @@
             </div>
 
             <div>
-                <label for="descripcion">Descripción:</label><br>
-                <textarea id="descripcion" name="descripcion" required rows="3" style="width: 100%;"></textarea>
+                <label for="apellidos">Apellidos:</label><br>
+                <input type="text" id="apellidos" name="apellidos" required>
             </div>
 
             <div>
-                <label for="nserie">Nº Serie:</label><br>
-                <input type="text" id="nserie" name="nserie" required>
+                <label for="password">Contraseña (max 32 carc.):</label><br>
+                <input type="password" id="password" name="password" required maxlength="32">
             </div>
 
             <div>
-                <label for="estado">Estado:</label><br>
-                <select id="estado" name="estado" required style="width: 100%; padding: 5px;">
-                    <option value="Operativo">H (Operativo)</option>
-                    <option value="Mantenimiento">M (Mantenimiento)</option>
-                    <option value="Baja">O (Baja)</option>
+                <label for="telefono">Teléfono:</label><br>
+                <input type="text" id="telefono" name="telefono">
+            </div>
+
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div>
+                <label for="sexo">Sexo:</label><br>
+                <select id="sexo" name="sexo">
+                    <option value="">Seleccione...</option>
+                    <option value="H">Hombre</option>
+                    <option value="M">Mujer</option>
                 </select>
             </div>
 
             <div>
-                <label for="prioridad">Prioridad:</label><br>
-                <select id="prioridad" name="prioridad" required style="width: 100%; padding: 5px;">
-                    <option value="1">Baja</option>
-                    <option value="2">Media</option>
-                    <option value="3">Alta</option>
-                </select>
+                <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br>
+                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
             </div>
         </fieldset><br>
 
-        <button type="submit" id="submitBtn">Enviar</button>
+        <button type="submit" id="submitBtn">Crear Alumno</button>
         <button type="button" id="cancelBtn" onclick="window.location.href='table.html'"
             style="background-color: #f44336; margin-left: 10px;">Cancelar</button>
     </form><br>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gestión de Alumnos</title>
     <script type="text/javascript" src="../js/index.js" defer></script>
     <link rel="stylesheet" href="../css/index.css">
     <!-- Librerías Externas -->
@@ -14,51 +14,27 @@
 
 <body>
     <header>
-        <h1>Tabla</h1>
+        <h1>Listado de Alumnos</h1>
     </header>
-    <input type="text" id="filtro" placeholder="Nombre o Apellido">
-    <table id="tablaElementos" border="1">
+    <div style="margin: 20px;">
+        <input type="text" id="filtro" placeholder="Filtrar por nombre o apellidos...">
+        <button onclick="window.location.href='form.html'" style="float: right;">Nuevo Alumno</button>
+    </div>
+    <table id="tablaElementos" border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
         <thead>
             <tr>
-                <th>nombre</th>
-                <th>descripcion</th>
-                <th>nserie</th>
-                <th>estado</th>
-                <th>prioridad</th>
-                <th>acciones</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Sexo</th>
+                <th>Fecha Nacimiento</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
-        </tr>
     </table>
-    
-    <template id="tmpl-editar">
-        <div style="text-align: left;">
-            <label>Nombre:</label>
-            <input id="edit-nombre" class="swal2-input" style="width: 90%; margin: 10px 0;">
-            
-            <label>Descripción:</label>
-            <textarea id="edit-descripcion" class="swal2-textarea" style="width: 90%; margin: 10px 0;"></textarea>
-            
-            <label>Nº Serie:</label>
-            <input id="edit-nserie" class="swal2-input" style="width: 90%; margin: 10px 0;">
-            
-            <label>Estado:</label>
-            <select id="edit-estado" class="swal2-select" style="width: 95%; margin: 10px 0;">
-                <option value="Operativo">Activo</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-                <option value="Baja">Inactivo</option>
-            </select>
-            
-            <label>Prioridad:</label>
-            <select id="edit-prioridad" class="swal2-select" style="width: 95%; margin: 10px 0;">
-                <option value="1">Baja</option>
-                <option value="2">Media</option>
-                <option value="3">Alta</option>
-            </select>
-        </div>
-    </template>
 
     <script src="../js/nav.js"></script>
 </body>

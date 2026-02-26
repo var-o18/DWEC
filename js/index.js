@@ -3,225 +3,198 @@ let cacheDatos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById('tablaElementos')) {
-        traerElementos();
-        document.getElementById('filtro').addEventListener('input', filtrarElementos);
+        traerUsuarios();
+        document.getElementById('filtro').addEventListener('input', filtrarUsuarios);
     }
-    const form = document.getElementById('registroForm');
-    if (form) configurarFormulario(form);
+    const formulario = document.getElementById('registroForm');
+    if (formulario) configurarFormulario(formulario);
 });
 
-function configurarFormulario(form) {
-    document.getElementById('formLegend').innerHTML = "Nuevo Elemento";
-    form.onsubmit = (e) => {
+function configurarFormulario(formulario) {
+    document.getElementById('formLegend').innerHTML = "nuevo usuario";
+    formulario.onsubmit = (e) => {
         e.preventDefault();
-        insertarElemento(new FormData(form));
+        insertarUsuario(new FormData(formulario));
     };
 }
 
-function insertarElemento(formData) {
-    Swal.fire({ title: 'Vas a crear un elemento nuevo chavalin', showCancelButton: true })
-        .then((result) => {
-            if (result.isConfirmed) {
-                fetch(URL + "createElement2.php", { method: 'POST', body: formData })
-                    .then(res => res.json())
-                    .then(json => {
-                        if (json.id) {
-                            Swal.fire('Elemento creado', )
+function insertarUsuario(datosFormulario) {
+    Swal.fire({ title: 'vas a crear un usuario nuevo chavalin', showCancelButton: true })
+        .then((resultado) => {
+            if (resultado.isConfirmed) {
+                fetch(URL + "crearUsuario2.php", { method: 'POST', body: datosFormulario })
+                    .then(respuesta => respuesta.json())
+                    .then(datosJson => {
+                        if (datosJson.success) {
+                            Swal.fire('usuario creado maquinaaaaa', )
                                 .then(() => window.location.href = "table.html");
+                        } else {
+                            Swal.fire('vaya fallo', datosJson.message, 'error');
                         }
                     });
             }
         });
 }
 
-function traerElementos() {
-    fetch(URL + "getElement.php")
-        .then(response => response.json())
-        .then(json => {
-            cacheDatos = json;
-            llenarTabla(cacheDatos);
+function traerUsuarios() {
+    fetch(URL + "getUsuario.php")
+        .then(respuesta => respuesta.json())
+        .then(datosJson => {
+            if (datosJson.success) {
+                cacheDatos = datosJson.data;
+                llenarTabla(cacheDatos);
+            }
         })
-        .catch(error => console.error("Error al cargar:", error));
+        .catch(error => console.error("error al cargar:", error));
 }
-
 
 function quitarAcentos(texto) {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function filtrarElementos() {
-    const valor = document.getElementById('filtro').value.toLowerCase();
+function filtrarUsuarios() {
+    const valorBusqueda = document.getElementById('filtro').value.toLowerCase();
 
-    if (valor.length < 3) {
+    if (valorBusqueda.length < 3) {
         llenarTabla(cacheDatos);
         return;
     }
 
-    const filtrados = cacheDatos.filter(item => {
-        const nombre = quitarAcentos(item.nombre.toLowerCase());
-        const descripcion = quitarAcentos(item.descripcion.toLowerCase());
-        return nombre.includes(valor) || descripcion.includes(valor);
+    const usuariosFiltrados = cacheDatos.filter(usuario => {
+        const nombreUsuario = quitarAcentos((usuario.nombre || "").toLowerCase());
+        const apellidosUsuario = quitarAcentos((usuario.apellidos || "").toLowerCase());
+        return nombreUsuario.includes(valorBusqueda) || apellidosUsuario.includes(valorBusqueda);
     });
 
-    llenarTabla(filtrados);
+    llenarTabla(usuariosFiltrados);
 }
 
-
-function crearCelda(texto) {
-    const td = document.createElement('td');
-    td.textContent = texto;
-    return td;
+function crearCelda(contenidoTexto) {
+    const celda = document.createElement('td');
+    celda.textContent = contenidoTexto;
+    return celda;
 }
 
-function crearFila(item) {
-    const tr = document.createElement('tr');
-    tr.dataset.id = item.id;
+function crearFila(usuarioIndividual) {
+    const filaTabla = document.createElement('tr');
+    filaTabla.dataset.id = usuarioIndividual.id;
 
-    let estBusca = (item.estado || "").toLowerCase();
-    let estadoTexto = "Desconocido";
-    if (estBusca === 'operativo' || estBusca === 'h' || estBusca === 'activo') estadoTexto = 'Activo';
-    else if (estBusca === 'baja' || estBusca === 'o' || estBusca === 'inactivo') estadoTexto = 'Inactivo';
-    else if (estBusca === 'mantenimiento' || estBusca === 'm') estadoTexto = 'Mantenimiento';
+    filaTabla.appendChild(crearCelda(usuarioIndividual.nombre || "sin nombre"));
+    filaTabla.appendChild(crearCelda(usuarioIndividual.apellidos || ""));
+    filaTabla.appendChild(crearCelda(usuarioIndividual.email || ""));
+    filaTabla.appendChild(crearCelda(usuarioIndividual.telefono || ""));
+    filaTabla.appendChild(crearCelda(usuarioIndividual.sexo || ""));
+    filaTabla.appendChild(crearCelda(usuarioIndividual.fecha_nacimiento || ""));
 
+    const celdaAcciones = document.createElement('td');
 
-    let prioBusca = (item.prioridad || "").toString().toLowerCase();
-    let prioridadTexto = "Baja";
-    if (prioBusca === '1' || prioBusca === 'baja') prioridadTexto = "Baja";
-    else if (prioBusca === '2' || prioBusca === 'media') prioridadTexto = "Media";
-    else if (prioBusca === '3' || prioBusca === 'alta') prioridadTexto = "Alta";
+    const botonBorrar = document.createElement('button');
+    botonBorrar.textContent = 'borrar';
+    botonBorrar.onclick = () => eliminarUsuario(usuarioIndividual.id);
+    celdaAcciones.appendChild(botonBorrar);
 
-    tr.appendChild(crearCelda(item.nombre || "Sin Nombre"));
-    tr.appendChild(crearCelda(item.descripcion || ""));
-    tr.appendChild(crearCelda(item.nserie || ""));
-    tr.appendChild(crearCelda(estadoTexto));
-    tr.appendChild(crearCelda(prioridadTexto));
-
-    const tdAcciones = document.createElement('td');
-
-    const btnBorrar = document.createElement('button');
-    btnBorrar.textContent = 'Borrar';
-    btnBorrar.onclick = () => eliminarElemento(item.id);
-    tdAcciones.appendChild(btnBorrar);
-
-    const btnModificar = document.createElement('button');
-    btnModificar.textContent = 'Modificar';
-    btnModificar.onclick = () => {
-        console.log("Editando item:", item);
-        prepararModificacion(item);
+    const botonModificar = document.createElement('button');
+    botonModificar.textContent = 'modificar';
+    botonModificar.onclick = () => {
+        console.log("editando usuario:", usuarioIndividual);
+        prepararModificacion(usuarioIndividual);
     };
-    tdAcciones.appendChild(btnModificar);
+    celdaAcciones.appendChild(botonModificar);
 
-    tr.appendChild(tdAcciones);
+    filaTabla.appendChild(celdaAcciones);
 
-    return tr;
+    return filaTabla;
 }
 
-function prepararModificacion(item) {
+function prepararModificacion(usuario) {
     fetch('elementoedit.html')
-        .then(respuesta => respuesta.text())
-        .then(htmlDeArchivo => {
-
+        .then(respuestaServidor => respuestaServidor.text())
+        .then(codigoHtml => {
             Swal.fire({
-                title: 'Editar Elemento',
-                html: htmlDeArchivo,
+                title: 'editar usuario maquina',
+                html: codigoHtml,
                 showCancelButton: true,
-                confirmButtonText: 'Guardar cambios',
+                confirmButtonText: 'guardar cambios',
                 didOpen: () => {
-                    document.getElementById('edit-nombre').value = item.nombre || "";
-                    document.getElementById('edit-descripcion').value = item.descripcion || "";
-                    document.getElementById('edit-nserie').value = item.nserie || "";
-
-                    if (item.estado == 'h' || item.estado == 'activo' || item.estado == 'operativo') {
-                        document.getElementById('edit-estado').value = 'Operativo';
-                    } else if (item.estado == 'o' || item.estado == 'inactivo' || item.estado == 'baja') {
-                        document.getElementById('edit-estado').value = 'Baja';
-                    } else {
-                        document.getElementById('edit-estado').value = 'Mantenimiento';
-                    }
-
-                    if (item.prioridad == '1' || item.prioridad == 'baja' || item.prioridad == 'Baja') {
-                        document.getElementById('edit-prioridad').value = '1';
-                    } else if (item.prioridad == '2' || item.prioridad == 'media' || item.prioridad == 'Media') {
-                        document.getElementById('edit-prioridad').value = '2';
-                    } else {
-                        document.getElementById('edit-prioridad').value = '3';
-                    }
+                    document.getElementById('edit-nombre').value = usuario.nombre || "";
+                    document.getElementById('edit-apellidos').value = usuario.apellidos || "";
+                    document.getElementById('edit-email').value = usuario.email || "";
+                    document.getElementById('edit-telefono').value = usuario.telefono || "";
+                    document.getElementById('edit-sexo').value = usuario.sexo || "H";
+                    document.getElementById('edit-fecha').value = usuario.fecha_nacimiento || "";
                 }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formElement = document.getElementById('form-edit-elemento');
-                    const datosParaEnviar = new FormData(formElement);
-
-                    confirmarModificacion(item.id, datosParaEnviar);
+            }).then((resultadoSwal) => {
+                if (resultadoSwal.isConfirmed) {
+                    const elementoFormulario = document.getElementById('form-edit-usuario');
+                    const datosAEnviar = new FormData(elementoFormulario);
+                    confirmarModificacion(usuario.id, datosAEnviar);
                 }
             });
         })
-        .catch(error => {
-            console.error("Error al cargar elementoedit.html:", error);
-            Swal.fire('No se ha podido modificar el elemento', 'error');
+        .catch(errorCarga => {
+            console.error("error al cargar elementoedit.html:", errorCarga);
+            Swal.fire('no se ha podido modificar el usuario', 'error');
         });
 }
 
-function confirmarModificacion(id, formData) {
-
-    fetch(URL + "modifyElements.php?id=" + id, {
+function confirmarModificacion(idUsuario, datosPost) {
+    fetch(URL + "modificarUsuario.php?id=" + idUsuario, {
         method: 'POST',
-        body: formData
+        body: datosPost
     })
-        .then(response => {
-            if (!response.ok) throw new Error('Error en la respuesta del servidor');
-            return response.json();
+        .then(respuestaServidor => {
+            if (!respuestaServidor.ok) throw new Error('error en la respuesta del servidor');
+            return respuestaServidor.json();
         })
-        .then(json => {
-            console.log("Respuesta del servidor:", json);
-            if (json.id) {
-                Swal.fire('Elemento modificado correctamente', 'success')
+        .then(datosJson => {
+            console.log("respuesta del servidor:", datosJson);
+            if (datosJson.success) {
+                Swal.fire('usuario modificado correctamente maquinaaaaa', 'success')
                     .then(() => {
-                        traerElementos();
+                        traerUsuarios();
                     });
             } else {
-                Swal.fire('No se ha podido modificar el elemento', 'error');
+                Swal.fire('no se ha podido modificar el usuario', 'error');
             }
         })
-        .catch(error => {
-            console.error("Error al modificar:", error);
-            Swal.fire('No se ha podido modificar el elemento', 'error');
+        .catch(errorPeticion => {
+            console.error("error al modificar:", errorPeticion);
+            Swal.fire('no se ha podido modificar el usuario', 'error');
         });
 }
 
-function eliminarElemento(id) {
+function eliminarUsuario(idParaBorrar) {
     Swal.fire({
-        title: 'Vas a borrar un elemento XD', icon: 'warning', showCancelButton: true, cancelButtonText: 'noooo', confirmButtonText: 'si, borrarlo'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(URL + "deleteElement.php?id=" + id)
-                .then(response => response.json())
-                .then(json => {
-                    if (json.id) {
-                        Swal.fire('El elemento ha sido eliminado.', 'success');
-                        traerElementos();
+        title: 'vas a borrar un usuario XD', icon: 'warning', showCancelButton: true, cancelButtonText: 'noooo', confirmButtonText: 'si, borrarlo'
+    }).then((resultadoBorrado) => {
+        if (resultadoBorrado.isConfirmed) {
+            fetch(URL + "deleteUsuario.php?id=" + idParaBorrar)
+                .then(respuestaServidor => respuestaServidor.json())
+                .then(datosJson => {
+                    if (datosJson.success) {
+                        Swal.fire('el usuario ha sido eliminado maquinaaaaa', 'success');
+                        traerUsuarios();
                     } else {
-                        Swal.fire('No se ha podido eliminar el elemento', 'error');
+                        Swal.fire('no se ha podido eliminar el usuario', 'error');
                     }
                 })
-                .catch(error => {
-                    console.error("Error al eliminar:", error);
-                    Swal.fire('No se ha podido eliminar el elemento', 'error');
+                .catch(errorBorrado => {
+                    console.error("error al eliminar:", errorBorrado);
+                    Swal.fire('no se ha podido eliminar el usuario', 'error');
                 });
         }
     });
 }
 
-function llenarTabla(lista) {
-    const table = document.getElementById('tablaElementos');
-    if (!table) return;
+function llenarTabla(listaUsuarios) {
+    const tablaAlumnos = document.getElementById('tablaElementos');
+    if (!tablaAlumnos) return;
 
-    const tbody = table.getElementsByTagName('tbody')[0];
-    tbody.innerHTML = '';
+    const cuerpoTabla = tablaAlumnos.getElementsByTagName('tbody')[0];
+    cuerpoTabla.innerHTML = '';
 
-    for (let i = 0; i < lista.length; i++) {
-        const fila = crearFila(lista[i]);
-        tbody.appendChild(fila);
+    for (let i = 0; i < listaUsuarios.length; i++) {
+        const filaNueva = crearFila(listaUsuarios[i]);
+        cuerpoTabla.appendChild(filaNueva);
     }
 }
-

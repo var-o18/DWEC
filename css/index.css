@@ -103,11 +103,11 @@ body .swal2-container .swal2-title {
   margin-bottom: 20px;
 }
 
-.custom-edit-form {
+.formulario-edicion-personalizado {
     padding: 10px;
 }
 
-.custom-edit-form label {
+.formulario-edicion-personalizado label {
   display: block;
   margin-top: 15px;
   margin-bottom: 5px;
@@ -118,7 +118,7 @@ body .swal2-container .swal2-title {
   text-transform: capitalize;
 }
 
-.custom-edit-form .edit-input {
+.formulario-edicion-personalizado .entrada-edicion {
   background-color: #333;
   color: #ff6347;
   border: 1px solid #444;
@@ -131,7 +131,7 @@ body .swal2-container .swal2-title {
   display: block;
 }
 
-.custom-edit-form .edit-input:focus {
+.formulario-edicion-personalizado .entrada-edicion:focus {
   border-color: #ff6347;
   outline: none;
   box-shadow: 0 0 5px rgba(255, 99, 71, 0.4);
