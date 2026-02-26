@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
     fetch("nav.html")
-        .then(response => {
-            if (!response.ok) {
+        .then(respuesta => {
+            if (!respuesta.ok) {
                 throw new Error("Nav no disponible");
             }
-            return response.text();
-        })
-        .then(data => {
+            return respuesta.text();
+        }).then(data => {
             document.body.insertAdjacentHTML("afterbegin", data);
 
             const currentPath = window.location.pathname.split("/").pop() || "index.html";
@@ -18,6 +17,5 @@ document.addEventListener("DOMContentLoaded", () => {
                     link.classList.add("active");
                 }
             });
-        })
-        .catch(error => console.error("Error loading navbar:", error));
+        }).catch(error => console.error("Error loading navbar:", error));
 });

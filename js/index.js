@@ -164,8 +164,7 @@ function confirmarModificacion(idUsuario, datosPost) {
 }
 
 function eliminarUsuario(idParaBorrar) {
-    Swal.fire({
-        title: 'vas a borrar un usuario XD', icon: 'warning', showCancelButton: true, cancelButtonText: 'noooo', confirmButtonText: 'si, borrarlo'
+    Swal.fire({ title: 'vas a borrar un usuario XD', icon: 'warning', showCancelButton: true, cancelButtonText: 'noooo', confirmButtonText: 'si, borrarlo'
     }).then((resultadoBorrado) => {
         if (resultadoBorrado.isConfirmed) {
             fetch(URL + "deleteUsuario.php?id=" + idParaBorrar)
